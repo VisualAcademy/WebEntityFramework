@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SeminarModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+  <EntityContainer Name="SeminarModelStoreContainer">
+    <EntitySet Name="Rooms" EntityType="SeminarModel.Store.Rooms" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Talks" EntityType="SeminarModel.Store.Talks" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Speakers" EntityType="SeminarModel.Store.Speakers" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TalkSpeaker" EntityType="SeminarModel.Store.TalkSpeaker" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="RoomTalk" Association="SeminarModel.Store.RoomTalk">
+      <End Role="Room" EntitySet="Rooms" />
+      <End Role="Talk" EntitySet="Talks" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TalkSpeaker_Talk" Association="SeminarModel.Store.FK_TalkSpeaker_Talk">
+      <End Role="Talk" EntitySet="Talks" />
+      <End Role="TalkSpeaker" EntitySet="TalkSpeaker" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TalkSpeaker_Speaker" Association="SeminarModel.Store.FK_TalkSpeaker_Speaker">
+      <End Role="Speaker" EntitySet="Speakers" />
+      <End Role="TalkSpeaker" EntitySet="TalkSpeaker" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Rooms">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Talks">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Title" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="When" Type="datetime" Nullable="true" />
+    <Property Name="RoomID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Speakers">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TalkSpeaker">
+    <Key>
+      <PropertyRef Name="Talks_ID" />
+      <PropertyRef Name="Speakers_ID" />
+    </Key>
+    <Property Name="Talks_ID" Type="int" Nullable="false" />
+    <Property Name="Speakers_ID" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="RoomTalk">
+    <End Role="Room" Type="SeminarModel.Store.Rooms" Multiplicity="1" />
+    <End Role="Talk" Type="SeminarModel.Store.Talks" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Room">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Talk">
+        <PropertyRef Name="RoomID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TalkSpeaker_Talk">
+    <End Role="Talk" Type="SeminarModel.Store.Talks" Multiplicity="1" />
+    <End Role="TalkSpeaker" Type="SeminarModel.Store.TalkSpeaker" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Talk">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TalkSpeaker">
+        <PropertyRef Name="Talks_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TalkSpeaker_Speaker">
+    <End Role="TalkSpeaker" Type="SeminarModel.Store.TalkSpeaker" Multiplicity="*" />
+    <End Role="Speaker" Type="SeminarModel.Store.Speakers" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Speaker">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TalkSpeaker">
+        <PropertyRef Name="Speakers_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="SeminarModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+        <EntityContainer Name="SeminarModelContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Rooms" EntityType="SeminarModel.Room" />
+          <EntitySet Name="Talks" EntityType="SeminarModel.Talk" />
+          <EntitySet Name="Speakers" EntityType="SeminarModel.Speaker" />
+          <AssociationSet Name="RoomTalk" Association="SeminarModel.RoomTalk">
+            <End Role="Room" EntitySet="Rooms" />
+            <End Role="Talk" EntitySet="Talks" />
+          </AssociationSet>
+          <AssociationSet Name="TalkSpeaker" Association="SeminarModel.TalkSpeaker">
+            <End Role="Talk" EntitySet="Talks" />
+            <End Role="Speaker" EntitySet="Speakers" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Room">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Name" Nullable="false" />
+          <NavigationProperty Name="Talks" Relationship="SeminarModel.RoomTalk" FromRole="Room" ToRole="Talk" />
+        </EntityType>
+        <EntityType Name="Talk">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Title" Nullable="false" />
+          <Property Type="DateTime" Name="When" Nullable="true" />
+          <NavigationProperty Name="Rooms" Relationship="SeminarModel.RoomTalk" FromRole="Talk" ToRole="Room" />
+          <Property Type="Int32" Name="RoomID" Nullable="false" />
+          <NavigationProperty Name="Speakers" Relationship="SeminarModel.TalkSpeaker" FromRole="Talk" ToRole="Speaker" />
+        </EntityType>
+        <EntityType Name="Speaker">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Name" Nullable="false" />
+          <NavigationProperty Name="Talks" Relationship="SeminarModel.TalkSpeaker" FromRole="Speaker" ToRole="Talk" />
+        </EntityType>
+        <Association Name="RoomTalk">
+          <End Type="SeminarModel.Room" Role="Room" Multiplicity="1" />
+          <End Type="SeminarModel.Talk" Role="Talk" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Room">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Talk">
+              <PropertyRef Name="RoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TalkSpeaker">
+          <End Type="SeminarModel.Talk" Role="Talk" Multiplicity="*" />
+          <End Type="SeminarModel.Speaker" Role="Speaker" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="SeminarModelStoreContainer" CdmEntityContainer="SeminarModelContainer">
+    <EntitySetMapping Name="Rooms">
+      <EntityTypeMapping TypeName="IsTypeOf(SeminarModel.Room)">
+        <MappingFragment StoreEntitySet="Rooms">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Talks">
+      <EntityTypeMapping TypeName="IsTypeOf(SeminarModel.Talk)">
+        <MappingFragment StoreEntitySet="Talks">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="When" ColumnName="When" />
+          <ScalarProperty Name="RoomID" ColumnName="RoomID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Speakers">
+      <EntityTypeMapping TypeName="IsTypeOf(SeminarModel.Speaker)">
+        <MappingFragment StoreEntitySet="Speakers">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="TalkSpeaker" TypeName="SeminarModel.TalkSpeaker" StoreEntitySet="TalkSpeaker">
+      <EndProperty Name="Talk">
+        <ScalarProperty Name="ID" ColumnName="Talks_ID" />
+      </EndProperty>
+      <EndProperty Name="Speaker">
+        <ScalarProperty Name="ID" ColumnName="Speakers_ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram Name="SeminarModel" >
+        <EntityTypeShape EntityType="SeminarModel.Room" Width="1.5" PointX="0.75" PointY="0.625" Height="1.4033821614583333" />
+        <EntityTypeShape EntityType="SeminarModel.Talk" Width="1.5" PointX="3" PointY="1.375" Height="1.59568359375" />
+        <EntityTypeShape EntityType="SeminarModel.Speaker" Width="1.5" PointX="5.25" PointY="2.375" Height="1.59568359375" />
+        <AssociationConnector Association="SeminarModel.RoomTalk">
+          <ConnectorPoint PointX="2.25" PointY="1.797841796875" />
+          <ConnectorPoint PointX="3" PointY="1.797841796875" />
+        </AssociationConnector>
+        <AssociationConnector Association="SeminarModel.TalkSpeaker">
+          <ConnectorPoint PointX="4.5" PointY="2.9612939453125" />
+          <ConnectorPoint PointX="5.25" PointY="2.9612939453125" />
+        </AssociationConnector>
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
